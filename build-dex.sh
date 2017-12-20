@@ -1,0 +1,1 @@
+dx --dex --output=./Main.dex  app/build/intermediates/classes/release/com/goodluck/sync/Main.class

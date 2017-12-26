@@ -18,6 +18,7 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
 public class ProtoBufServer {
+    private ProtoBufServerHandler mHandler;
 
     public void bind(int port) throws Exception {
         // 配置服务端的NIO线程组
@@ -36,13 +37,12 @@ public class ProtoBufServer {
                     ch.pipeline().addLast(new ProtobufVarint32FrameDecoder());
                     ch.pipeline().addLast(new ProtobufVarint32LengthFieldPrepender());
                     ch.pipeline().addLast(new ProtobufDecoder(SyncPhone.SyncMessage.getDefaultInstance()));
-                    ch.pipeline().addLast(new ProtoBufServerHandler());
+                    ch.pipeline().addLast(mHandler = new ProtoBufServerHandler());
                 }
             });
 
             // 绑定端口，同步等待成功
             ChannelFuture future = bootstrap.bind(port).sync();
-
             System.out.println("init start");
             // 等待服务端监听端口关闭
             future.channel().closeFuture().sync();

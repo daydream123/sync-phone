@@ -8,6 +8,8 @@ import android.view.IWindowManager;
 import android.view.InputEvent;
 import android.view.MotionEvent;
 
+import com.zf.sync.netty.ProtoBufServer;
+
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -16,7 +18,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Main {
@@ -28,23 +29,13 @@ public class Main {
     }
 
     private void startServer(){
-        ServerSocket serverSocket = null;
-
+        ProtoBufServer server = new ProtoBufServer();
         try {
-            System.out.println("startServer ...");
-            serverSocket = new ServerSocket(8888);
             init();
-
-            System.out.println("listener...");
-            Socket socket = serverSocket.accept();
-            acceptConnect(socket);
-        } catch (IOException
-                | InvocationTargetException
-                | NoSuchMethodException
-                | ClassNotFoundException
-                | IllegalAccessException e) {
-            IOUtils.closeQuietly(serverSocket);
-            System.out.println("error occurred when start server: " + e.getMessage());
+            server.bind(8888);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("------ error occurred --------");
         }
     }
 

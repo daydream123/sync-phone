@@ -1,13 +1,16 @@
 package com.zf.sync;
 
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.hardware.input.InputManager;
 import android.os.Build;
+import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.v4.view.InputDeviceCompat;
 import android.view.IWindowManager;
+import android.view.InputEvent;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
@@ -29,10 +32,24 @@ public class CommandHandler {
     private long mDownTime;
     private float mScale = 1;
 
-    public CommandHandler(InputManager inputManager, IWindowManager windowManager, Method injectInputEventMethod) {
-        mInputManager = inputManager;
-        mWindowManager = windowManager;
-        mInjectInputEventMethod = injectInputEventMethod;
+    @SuppressLint("PrivateApi")
+    public CommandHandler() {
+        try {
+            Method getServiceMethod = Class.forName("android.os.ServiceManager").getDeclaredMethod("getService", String.class);
+            mWindowManager = IWindowManager.Stub.asInterface((IBinder) getServiceMethod.invoke(null, "window"));
+            mInputManager = (InputManager) InputManager.class.getDeclaredMethod("getInstance", new Class[0]).invoke(null);
+            MotionEvent.class.getDeclaredMethod("obtain").setAccessible(true);
+            mInjectInputEventMethod = InputManager.class.getMethod("injectInputEvent", InputEvent.class, Integer.TYPE);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void handlerUp(String line) {

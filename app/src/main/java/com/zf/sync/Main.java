@@ -2,22 +2,13 @@ package com.zf.sync;
 
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
-import android.hardware.input.InputManager;
-import android.os.IBinder;
-import android.view.IWindowManager;
-import android.view.InputEvent;
-import android.view.MotionEvent;
 
 import com.zf.sync.netty.ProtoBufServer;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.Socket;
 
 public class Main {
@@ -40,14 +31,8 @@ public class Main {
     }
 
     @SuppressLint("PrivateApi")
-    private void init() throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        Method getServiceMethod = Class.forName("android.os.ServiceManager").getDeclaredMethod("getService", String.class);
-        IWindowManager windowManager = IWindowManager.Stub.asInterface((IBinder) getServiceMethod.invoke(null, "window"));
-        InputManager inputManager = (InputManager) InputManager.class.getDeclaredMethod("getInstance", new Class[0]).invoke(null);
-        MotionEvent.class.getDeclaredMethod("obtain").setAccessible(true);
-        Method injectInputEventMethod = InputManager.class.getMethod("injectInputEvent", InputEvent.class, Integer.TYPE);
-
-        mCommandHandler = new CommandHandler(inputManager, windowManager, injectInputEventMethod);
+    private void init() {
+        mCommandHandler = new CommandHandler();
     }
 
     private void acceptConnect(Socket socket) {
@@ -69,7 +54,6 @@ public class Main {
                         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
 
                         outputStream.write(2);
-                        writeInt(outputStream, byteArrayOutputStream.size());
                         outputStream.write(byteArrayOutputStream.toByteArray());
                         outputStream.flush();
                         System.out.println("write screenshot...");
@@ -131,12 +115,5 @@ public class Main {
                 }
             }
         }.start();
-    }
-
-    private static void writeInt(OutputStream outputStream, int v) throws IOException {
-        outputStream.write(v >> 24);
-        outputStream.write(v >> 16);
-        outputStream.write(v >> 8);
-        outputStream.write(v);
     }
 }

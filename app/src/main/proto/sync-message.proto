@@ -1,14 +1,12 @@
 syntax = "proto3";
 
 option java_package = "com.zf.sync";
-option java_outer_classname = "SyncPhone";
+option java_outer_classname = "SyncTool";
 
-message SyncMessage {
+message DeviceInfo {
     Size displaySize = 1;
     Size screenSize = 2;
     bool hasNavBar = 3;
-    bytes screenshot = 4;
-
 
     message Size {
         int32 x = 1;

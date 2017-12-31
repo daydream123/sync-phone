@@ -1,7 +1,5 @@
 package com.zf.sync.netty;
 
-import com.zf.sync.SyncPhone;
-
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -10,15 +8,10 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.protobuf.ProtobufDecoder;
-import io.netty.handler.codec.protobuf.ProtobufEncoder;
-import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
-import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
 public class ProtoBufServer {
-    private ProtoBufServerHandler mHandler;
 
     public void bind(int port) throws Exception {
         // 配置服务端的NIO线程组
@@ -33,17 +26,15 @@ public class ProtoBufServer {
             bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
                 @Override
                 public void initChannel(SocketChannel ch) {
-                    ch.pipeline().addLast(new ProtobufEncoder());
-                    ch.pipeline().addLast(new ProtobufVarint32FrameDecoder());
-                    ch.pipeline().addLast(new ProtobufVarint32LengthFieldPrepender());
-                    ch.pipeline().addLast(new ProtobufDecoder(SyncPhone.SyncMessage.getDefaultInstance()));
-                    ch.pipeline().addLast(mHandler = new ProtoBufServerHandler());
+                    ch.pipeline().addLast(new ByteArrayDecoder());
+                    ch.pipeline().addLast(new ByteArrayEncoder());
+                    ch.pipeline().addLast(new ProtoBufServerHandler());
                 }
             });
 
             // 绑定端口，同步等待成功
             ChannelFuture future = bootstrap.bind(port).sync();
-            System.out.println("init start");
+
             // 等待服务端监听端口关闭
             future.channel().closeFuture().sync();
         } finally {
@@ -54,15 +45,7 @@ public class ProtoBufServer {
     }
 
     public static void main(String[] args) throws Exception {
-        int port = 8080;
-        if (args != null && args.length > 0) {
-            try {
-                port = Integer.valueOf(args[0]);
-            } catch (NumberFormatException e) {
-                // 采用默认值
-            }
-        }
-        new ProtoBufServer().bind(port);
+        new ProtoBufServer().bind(8888);
     }
 
 }

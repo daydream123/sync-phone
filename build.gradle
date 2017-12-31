@@ -1,28 +1,69 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+group 'com.zf'
+version '1.0'
+
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'com.google.protobuf'
+
+sourceCompatibility = 1.8
 
 buildscript {
-    ext.kotlin_version = '1.1.51'
     repositories {
-        google()
-        jcenter()
+        mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "com.google.protobuf:protobuf-gradle-plugin:0.8.2"
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.1'
     }
 }
 
-allprojects {
-    repositories {
-        google()
-        jcenter()
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.4.0'
+    }
+    //noinspection GroovyAssignabilityCheck
+    plugins {
+        grpc {
+            artifact = "io.grpc:protoc-gen-grpc-java:1.8.0"
+        }
+    }
+    generateProtoTasks {
+        all()*.plugins {
+            grpc {
+                // To generate deprecated interfaces and static bindService method,
+                // turn the enable_deprecated option to true below:
+                option 'enable_deprecated=false'
+            }
+        }
     }
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+apply plugin: 'idea'
+
+idea {
+    module {
+        // Not using generatedSourceDirs because of
+        // https://discuss.gradle.org/t/support-for-intellij-2016/15294/8
+        sourceDirs += file("${projectDir}/build/generated/source/proto/main/java");
+        sourceDirs += file("${projectDir}/build/generated/source/proto/main/grpc");
+    }
 }
+
+dependencies {
+    testCompile "junit:junit:4.11"
+
+    compile "com.google.api.grpc:proto-google-common-protos:0.1.9"
+    compile "io.grpc:grpc-netty:1.8.0"
+    compile "io.grpc:grpc-protobuf:1.8.0"
+    compile "io.grpc:grpc-stub:1.8.0"
+    compile "io.netty:netty-codec-http2:4.1.16.Final"
+    compile "io.netty:netty-tcnative-boringssl-static:2.0.6.Final"
+
+    testCompile "io.grpc:grpc-testing:1.8.0"
+}
+
+mainClassName = 'com.zf.sync.Test'

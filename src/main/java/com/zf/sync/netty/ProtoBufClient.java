@@ -7,9 +7,8 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
 public class ProtoBufClient {
-    private Channel mChannel;
 
-    public void connect(int port, String host) throws Exception {
+    public void connect(int port, String host, ProtoBufClientHandler.MessageReadListener listener) throws Exception {
         // 配置客户端NIO线程组
         EventLoopGroup group = new NioEventLoopGroup();
         try {
@@ -22,16 +21,15 @@ public class ProtoBufClient {
                 public void initChannel(SocketChannel ch) {
                     ch.pipeline().addLast(new ByteArrayEncoder());
                     ch.pipeline().addLast(new ByteArrayDecoder());
-                    ch.pipeline().addLast(new ProtoBufClientHandler());
+                    ch.pipeline().addLast(new ProtoBufClientHandler(listener));
                 }
             });
 
             // 发起异步连接操作
             ChannelFuture future = bootstrap.connect(host, port).sync();
-            mChannel = future.channel();
 
             // 当代客户端链路关闭
-            mChannel.closeFuture().sync();
+            future.channel().closeFuture().sync();
         } finally {
             // 优雅退出，释放NIO线程组
             group.shutdownGracefully();
@@ -39,15 +37,7 @@ public class ProtoBufClient {
     }
 
     public static void main(String[] args) throws Exception {
-        int port = 8888;
-        if (args != null && args.length > 0) {
-            try {
-                port = Integer.valueOf(args[0]);
-            } catch (NumberFormatException e) {
-                // 采用默认值
-            }
-        }
-        new ProtoBufClient().connect(port, "127.0.0.1");
+        new ProtoBufClient().connect(8888, "127.0.0.1", null);
     }
 
 }

@@ -4,8 +4,8 @@ option java_package = "com.zf.sync";
 option java_outer_classname = "SyncTool";
 
 message DeviceInfo {
-  Size displaySize = 1;
-  Size screenSize = 2;
+  int32 screenHeight = 1;
+  int32 screenWidth = 2;
   bool hasNavBar = 3;
 
   message Size {

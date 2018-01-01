@@ -18,21 +18,12 @@ public class Test {
             Process process = CmdUtils.execShellInWait(export, execute);
             CmdUtils.execCmd(forwardPort);
             CmdUtils.readAndPrint(process.getInputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-        try {
             Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
 
-        try {
-            new ProtoBufClient().connect(8888, "127.0.0.1");
+            new ProtoBufClient().connect(8888, "127.0.0.1", null);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 }

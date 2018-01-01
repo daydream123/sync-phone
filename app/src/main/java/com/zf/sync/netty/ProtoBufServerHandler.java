@@ -1,9 +1,11 @@
 package com.zf.sync.netty;
 
 import android.graphics.Bitmap;
+import android.graphics.Point;
 
 import com.zf.sync.CommandHandler;
 import com.zf.sync.SyncTool;
+import com.zf.sync.screenshot.SurfaceControlVirtualDisplayFactory;
 
 import java.io.ByteArrayOutputStream;
 
@@ -25,8 +27,9 @@ public class ProtoBufServerHandler extends ChannelInboundHandlerAdapter {
         System.out.println("channelActive...");
 
         SyncTool.DeviceInfo.Builder builder = SyncTool.DeviceInfo.newBuilder();
-        builder.setDisplaySize(SyncTool.DeviceInfo.Size.newBuilder().setX(1080).setY(720));
-        builder.setScreenSize(SyncTool.DeviceInfo.Size.newBuilder().setX(1080).setY(720));
+        Point point = SurfaceControlVirtualDisplayFactory.getCurrentDisplaySize(false);
+        builder.setScreenHeight(point.y);
+        builder.setScreenWidth(point.x);
         builder.setHasNavBar(true);
         ctx.writeAndFlush(builder.build());
 
@@ -41,7 +44,7 @@ public class ProtoBufServerHandler extends ChannelInboundHandlerAdapter {
                         // screen shot
                         Bitmap bitmap = mCommandHandler.screenshot();
                         outputStream.reset();
-                        bitmap.compress(Bitmap.CompressFormat.PNG, 80, outputStream);
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 20, outputStream);
                         byte[] screenshotBytes = outputStream.toByteArray();
                         bitmap.recycle();
                         ctx.writeAndFlush(screenshotBytes);

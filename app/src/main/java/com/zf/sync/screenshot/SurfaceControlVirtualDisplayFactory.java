@@ -1,4 +1,4 @@
-package com.zf.sync;
+package com.zf.sync.screenshot;
 
 import android.annotation.SuppressLint;
 import android.graphics.Point;
@@ -25,7 +25,7 @@ public class SurfaceControlVirtualDisplayFactory implements VirtualDisplayFactor
         return getCurrentDisplaySize(true);
     }
 
-    static Point getCurrentDisplaySize(boolean rotate) {
+    public static Point getCurrentDisplaySize(boolean rotate) {
         try {
             @SuppressLint("PrivateApi")
             Method getServiceMethod = Class.forName("android.os.ServiceManager").getDeclaredMethod("getService", String.class);

@@ -1,4 +1,4 @@
-package com.zf.sync;
+package com.zf.sync.utils;
 
 import java.io.Serializable;
 import java.io.Writer;

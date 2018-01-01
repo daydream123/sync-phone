@@ -14,6 +14,8 @@ import android.view.InputEvent;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
+import com.zf.sync.screenshot.SurfaceControlVirtualDisplayFactory;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -23,14 +25,13 @@ import java.lang.reflect.Method;
 /**
  * Created by zhangfei on 2017/12/20.
  */
-
 public class CommandHandler {
     private InputManager mInputManager;
     private Method mInjectInputEventMethod;
     private IWindowManager mWindowManager;
 
     private long mDownTime;
-    private float mScale = 1;
+    private float mScale = 0.5f;
 
     @SuppressLint("PrivateApi")
     public CommandHandler() {

@@ -1,4 +1,4 @@
-package com.zf.sync;
+package com.zf.sync.screenshot;
 
 import android.os.Handler;
 import android.view.Surface;

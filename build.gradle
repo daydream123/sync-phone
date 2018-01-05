@@ -53,7 +53,14 @@ idea {
     }
 }
 
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+
 dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile "junit:junit:4.11"
 
     compile "com.google.api.grpc:proto-google-common-protos:0.1.9"

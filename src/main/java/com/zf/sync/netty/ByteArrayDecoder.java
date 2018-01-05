@@ -22,7 +22,6 @@ public class ByteArrayDecoder extends ByteToMessageDecoder {
             byte head1 = in.readByte();
             byte head2 = in.readByte();
             byte head3 = in.readByte();
-            System.out.println("from server: " + head0 + ", " + head1 + ", " + head2 + ", " + head3);
             byte[] sizeBytes = {head0, head1, head2, head3};
 
             int msgLen = ByteBuffer.wrap(sizeBytes).getInt();

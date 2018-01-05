@@ -8,7 +8,6 @@ import io.netty.util.ReferenceCountUtil;
 
 public class ProtoBufClientHandler extends ChannelInboundHandlerAdapter {
     private MessageReadListener mListener;
-
     public ProtoBufClientHandler(MessageReadListener listener) {
         mListener = listener;
     }

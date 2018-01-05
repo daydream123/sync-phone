@@ -15,14 +15,7 @@ public class ByteArrayEncoder extends MessageToByteEncoder<Object> {
 
     @Override
     protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
-        byte[] header = encodeHeader(msg);
-
-        System.out.print("from client:");
-        for (byte b : header) {
-            System.out.print(b + ", ");
-        }
-        System.out.println();
-        out.writeBytes(header);
+        out.writeBytes(encodeHeader(msg));
         out.writeBytes(convertToByteArray(msg));
     }
 

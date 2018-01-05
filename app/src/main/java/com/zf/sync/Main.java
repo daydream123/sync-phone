@@ -1,13 +1,10 @@
 package com.zf.sync;
 
 import android.annotation.SuppressLint;
-import android.graphics.Bitmap;
 
 import com.zf.sync.netty.ProtoBufServer;
 
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
@@ -33,36 +30,6 @@ public class Main {
     @SuppressLint("PrivateApi")
     private void init() {
         mCommandHandler = new CommandHandler();
-    }
-
-    private void acceptConnect(Socket socket) {
-        System.out.println("accepted...");
-        read(socket);
-        write(socket);
-    }
-
-    private void write(final Socket socket) {
-        new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                try {
-                    BufferedOutputStream outputStream = new BufferedOutputStream(socket.getOutputStream());
-                    while (true) {
-                        Bitmap bitmap = mCommandHandler.screenshot();
-                        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-
-                        outputStream.write(2);
-                        outputStream.write(byteArrayOutputStream.toByteArray());
-                        outputStream.flush();
-                        System.out.println("write screenshot...");
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
     }
 
     private void read(final Socket socket) {

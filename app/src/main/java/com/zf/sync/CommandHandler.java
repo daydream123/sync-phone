@@ -31,7 +31,7 @@ public class CommandHandler {
     private IWindowManager mWindowManager;
 
     private long mDownTime;
-    private float mScale = 0.5f;
+    private float mScale = 0.3f;
 
     @SuppressLint("PrivateApi")
     public CommandHandler() {
@@ -217,7 +217,7 @@ public class CommandHandler {
         } else if (rotation == 3) {
             m.postRotate(-270.0f);
         }
-        return Bitmap.createBitmap(bitmap, 0, 0, size.x, size.y, m, false);
+        return Bitmap.createBitmap(bitmap, 0, 0, size.x, size.y, m, true);
     }
 
     public void setScale(float scale) {

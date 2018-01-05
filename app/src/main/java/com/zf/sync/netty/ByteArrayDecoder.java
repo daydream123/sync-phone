@@ -55,6 +55,7 @@ public class ByteArrayDecoder extends ByteToMessageDecoder {
             if (result != null) {
                 out.add(result);
             }
+
         }
     }
 

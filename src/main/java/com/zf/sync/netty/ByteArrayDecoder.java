@@ -49,6 +49,8 @@ public class ByteArrayDecoder extends ByteToMessageDecoder {
                 offset = 0;
             }
 
+            bodyByteBuf.release();
+
             //反序列化
             Object result = decodeBody(dataType, array, offset, readableLen);
             if (result != null) {
